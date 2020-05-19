@@ -12,14 +12,16 @@
         }
         #handwriting {
             padding: 30px;
-            background-color: rgb(255, 240, 212);
+            background-color: rgb(243, 243, 243);
             text-align: center;
         }
+        #handwriting
         canvas {
             display: inline;
             margin: 0 auto;
             border: 0;
             background-color: white;
+            box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.135);
         }
         button {
             display: block;
@@ -33,6 +35,7 @@
             background-color: rgb(151, 217, 243);
         }
         #myfigures {
+            min-height: 100px;
             margin-top: 10px;
         }
         .figure {
@@ -51,9 +54,9 @@
 
     <h2>手書き入力領域</h2>
     <p>
-        以下中央の色の着いていない正方形領域に、
+        中央の正方形領域に、
         トラックパッドやマウスなどでドラッグして手書きで文字を描いてください。
-        カーソルが色の着いていない領域から出ると、画像ファイルが生成されます。
+        領域をダブルクリックするか、カーソルを領域から外すと、画像ファイルが生成されます。
     </p>
 
     <div id="handwriting">
