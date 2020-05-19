@@ -38,6 +38,25 @@
             min-height: 100px;
             margin-top: 10px;
         }
+        [id ^= "fig-"] {
+            min-height: 70px;
+            display: flex;
+        }
+        [id ^= "fig-"] > div:first-child {
+            width: 20px;
+            text-align: center;
+            margin: 2px;
+            border: 0;
+            padding: 5px;
+            background-color: rgb(133, 183, 226);
+            color: white;
+        }
+        [id ^= "fig-"] > div:nth-child(2) {
+            width: 100%;
+            margin: 2px;
+            padding: 10px 5px;
+            background-color: rgb(236, 236, 236);
+        }
         .figure {
             margin: 0;
             margin-top: 5px;
@@ -54,9 +73,11 @@
 
     <h2>手書き入力領域</h2>
     <p>
-        中央の正方形領域に、
-        トラックパッドやマウスなどでドラッグして手書きで文字を描いてください。
-        領域をダブルクリックするか、カーソルを領域から外すと、画像ファイルが生成されます。
+        <ul>
+            <li>数字を書いて、対応する数字キーを押す</li>
+            <li>ダブルクリックで消去</li>
+            <li>何かを描いて、領域からフォーカスを外すと、分類「*」に振り分けられる</li>
+        </ul>
     </p>
 
     <div id="handwriting">
@@ -67,6 +88,8 @@
     <p>書き損じはダブルクリックで削除できます。</p>
     <div id="myfigures">
     </div>
+
+    
 </main>
 <script>
     const $ = (selector) => {
@@ -87,6 +110,8 @@
         const position = e => {
             return [e.pageX - bb.left, e.pageY - bb.top];
         };
+
+        init_myfigures();
 
         canvas.addEventListener('mousemove', e => {
             if (!drawing) return;
@@ -114,7 +139,7 @@
             drawing = false;
         });
 
-        let generate_image = () => {
+        let output_figure = n => {
             // cf. HTMLCanvasElement.toBlob() -- MDN
             // https://developer.mozilla.org/ja/docs/Web/API/HTMLCanvasElement/toBlob
             canvas.toBlob(blob => {
@@ -123,7 +148,7 @@
 
                 img.src = url;
                 img.classList.add('figure');
-                $('#myfigures').appendChild(img);
+                $(`#myfigures>#fig-${n}>div:nth-child(2)`).appendChild(img);
             })
 
             // 手書き領域クリア
@@ -132,17 +157,47 @@
 
         canvas.addEventListener('mouseleave', e => {
             drawing = false;
-            generate_image();
+            output_figure('other');
         });
+
+        // 消去
         canvas.addEventListener('dblclick', e => {
             drawing = false;
-            generate_image();
+            context.clearRect(0, 0, canvas.width, canvas.height)
+        });
+
+        document.addEventListener('keydown', e => {
+            let n = +e.key;
+            if (Number.isInteger(n)) {
+                output_figure(n);
+            } 
         });
 
         // 書き損じをダブルクリックで削除
         $('#myfigures').addEventListener('dblclick', e => {
             e.target.remove();
         });
+    };
+
+    let init_myfigures = () => {
+        for (let i = 0; i <= 9; i++) {
+            let row_elem = document.createElement('div');
+            row_elem.id = `fig-${i}`;
+            let label_elem = document.createElement('div');
+            label_elem.textContent = i;
+            let container_elem = document.createElement('div');
+            row_elem.appendChild(label_elem);
+            row_elem.appendChild(container_elem);
+            $('#myfigures').appendChild(row_elem);
+        }
+        let row_elem = document.createElement('div');
+        row_elem.id = `fig-other`;
+        let label_elem = document.createElement('div');
+        label_elem.textContent = '*';
+        let container_elem = document.createElement('div');
+        row_elem.appendChild(label_elem);
+        row_elem.appendChild(container_elem);
+        $('#myfigures').appendChild(row_elem);
     };
 
     document.addEventListener('DOMContentLoaded', init);
