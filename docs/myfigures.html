@@ -150,19 +150,27 @@
             canvas.toBlob(blob => {
                 const img = document.createElement('img');
                 const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
+                const unixtime = (new Date()).getTime();
 
                 img.classList.add('figure');
                 img.src = url;
-
-                a.appendChild(img);
-                $(`#myfigures>#fig-${n}>div:nth-child(2)`).appendChild(a);
-                a.download = `${n}.png`;
-                a.href = url;
-            })
+                img.id = `${n}-${unixtime}`;
+                $(`#myfigures>#fig-${n}>div:nth-child(2)`).appendChild(img);
+            });
 
             // 手書き領域クリア
             context.clearRect(0, 0, canvas.width, canvas.height)
+        };
+
+        let download_figure = element => {
+            const a = document.createElement('a');
+            const url = element.src;
+
+            a.style.display = 'none';
+            a.download = `${element.id}.png`;
+            a.href = url;
+            document.body.appendChild(a);
+            a.click();
         };
 
         canvas.addEventListener('mouseleave', e => {
@@ -183,10 +191,27 @@
             } 
         });
 
-        // 書き損じをダブルクリックで削除
-        $('#myfigures').addEventListener('dblclick', e => {
-            e.target.remove();
+        let pulse_on = false;
+
+        $('#myfigures').addEventListener('click', e => {
+            if (pulse_on) { // double click
+                // 書き損じを削除
+                e.target.remove();
+                pulse_on = false;
+            } else {
+                // 画像ファイルをダウンロード
+                pulse_on = true;
+                setTimeout(() => {
+                    if (pulse_on) { // double click
+                        if (e.target.tagName === 'IMG') {
+                            download_figure(e.target);
+                        }
+                        pulse_on = false;
+                    }
+                }, 300);
+            }
         });
+
     };
 
     let init_myfigures = () => {
