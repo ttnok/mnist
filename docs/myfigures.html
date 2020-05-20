@@ -85,11 +85,16 @@
     </div>
 
     <h2>生成された画像</h2>
-    <p>書き損じはダブルクリックで削除できます。</p>
+    <p>
+        <ul>
+            <li>書き損じはダブルクリックで削除できます。</li>
+            <li>画像をクリックすると、ダウンロードされます。</li>
+        </ul>
+        
+    </p>
     <div id="myfigures">
     </div>
 
-    
 </main>
 <script>
     const $ = (selector) => {
@@ -145,10 +150,15 @@
             canvas.toBlob(blob => {
                 const img = document.createElement('img');
                 const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
 
-                img.src = url;
                 img.classList.add('figure');
-                $(`#myfigures>#fig-${n}>div:nth-child(2)`).appendChild(img);
+                img.src = url;
+
+                a.appendChild(img);
+                $(`#myfigures>#fig-${n}>div:nth-child(2)`).appendChild(a);
+                a.download = `${n}.png`;
+                a.href = url;
             })
 
             // 手書き領域クリア
@@ -160,8 +170,8 @@
             output_figure('other');
         });
 
-        // 消去
         canvas.addEventListener('dblclick', e => {
+            // 手書き領域クリア
             drawing = false;
             context.clearRect(0, 0, canvas.width, canvas.height)
         });
@@ -180,24 +190,22 @@
     };
 
     let init_myfigures = () => {
-        for (let i = 0; i <= 9; i++) {
+        let labels = [...Array(10).keys()];
+        labels.push('other');
+
+        labels.forEach(label => {
             let row_elem = document.createElement('div');
-            row_elem.id = `fig-${i}`;
+            row_elem.id = `fig-${label}`;
+
             let label_elem = document.createElement('div');
-            label_elem.textContent = i;
+            label_elem.textContent = (label === 'other') ? '*' : `${label}`;
+
             let container_elem = document.createElement('div');
+
             row_elem.appendChild(label_elem);
             row_elem.appendChild(container_elem);
             $('#myfigures').appendChild(row_elem);
-        }
-        let row_elem = document.createElement('div');
-        row_elem.id = `fig-other`;
-        let label_elem = document.createElement('div');
-        label_elem.textContent = '*';
-        let container_elem = document.createElement('div');
-        row_elem.appendChild(label_elem);
-        row_elem.appendChild(container_elem);
-        $('#myfigures').appendChild(row_elem);
+        })
     };
 
     document.addEventListener('DOMContentLoaded', init);
