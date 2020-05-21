@@ -90,13 +90,12 @@
             <li>画像をクリックすると、ダウンロード</li>
             <li>書き損じはダブルクリックで削除</li>
         </ul>
-        
     </p>
 
     <div id="myfigures">
     </div>
-
 </main>
+
 <script>
     const $ = (selector) => {
         return document.querySelector(selector);
@@ -108,15 +107,18 @@
     const init = () => {
         "use strict";
 
-        const bb = canvas.getBoundingClientRect();
-
         let drawing = false;
         let prev = {x: 0, y: 0};
 
         const position = e => {
-            return [e.pageX - bb.left, e.pageY - bb.top];
+            let bb = canvas.getBoundingClientRect();
+            return [
+                e.clientX - bb.left,
+                e.clientY - bb.top
+            ];
         };
 
+        // #myfigures の DOM 構築
         init_myfigures();
 
         canvas.addEventListener('mousemove', e => {
