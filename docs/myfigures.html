@@ -87,11 +87,12 @@
     <h2>生成された画像</h2>
     <p>
         <ul>
-            <li>書き損じはダブルクリックで削除できます。</li>
-            <li>画像をクリックすると、ダウンロードされます。</li>
+            <li>画像をクリックすると、ダウンロード</li>
+            <li>書き損じはダブルクリックで削除</li>
         </ul>
         
     </p>
+
     <div id="myfigures">
     </div>
 
@@ -191,27 +192,29 @@
             } 
         });
 
-        let pulse_on = false;
+        let timeout_id = null;
 
         $('#myfigures').addEventListener('click', e => {
-            if (pulse_on) { // double click
+            if (e.target.tagName !== 'IMG') {
+                return;
+            }
+
+            if (timeout_id !== null) { // double click
                 // 書き損じを削除
                 e.target.remove();
-                pulse_on = false;
+                clearTimeout(timeout_id);
+                console.log(timeout_id, 'cleared');
+                timeout_id = null;
             } else {
                 // 画像ファイルをダウンロード
-                pulse_on = true;
-                setTimeout(() => {
-                    if (pulse_on) { // double click
-                        if (e.target.tagName === 'IMG') {
-                            download_figure(e.target);
-                        }
-                        pulse_on = false;
-                    }
-                }, 300);
+                timeout_id = setTimeout(() => { // click
+                    download_figure(e.target);
+                    console.log(timeout_id, 'elapsed')
+                    timeout_id = null;
+                }, 300);  // 300ms が判別の閾値
+                console.log(timeout_id);
             }
         });
-
     };
 
     let init_myfigures = () => {
