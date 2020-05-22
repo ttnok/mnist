@@ -15,8 +15,7 @@
             background-color: rgb(243, 243, 243);
             text-align: center;
         }
-        #handwriting
-        canvas {
+        #handwriting > canvas {
             display: inline;
             margin: 0 auto;
             border: 0;
@@ -54,13 +53,11 @@
         [id ^= "fig-"] > div:nth-child(2) {
             width: 100%;
             margin: 2px;
-            padding: 10px 5px;
+            padding: 10px;
             background-color: rgb(236, 236, 236);
         }
         .figure {
-            margin: 0;
-            margin-top: 5px;
-            margin-right: 5px;
+            margin-right: 3px;
             border: 1px solid gray;
             width: 50px;
             height: 50px;
@@ -101,31 +98,64 @@
         return document.querySelector(selector);
     };
 
-    const canvas = $('canvas');
-    const context = canvas.getContext('2d');
+    let prev = {x: 0, y: 0};
+    let drawing = false;  // pen-up
+    let touched = false;  // 入力領域が白紙状態
+    let canvas = null;
+    let context = null;
 
-    const init = () => {
-        "use strict";
 
-        let drawing = false;
-        let prev = {x: 0, y: 0};
+    /******************************************* 
+     *  #myfigures の DOM 構築
+     */
+    const init_myfigures = () => {
+        'use strict';
+
+        [...Array(10).keys(), 'other'].forEach(label => {
+            const row_elem = document.createElement('div');
+            row_elem.id = `fig-${label}`;
+
+            const label_elem = document.createElement('div');
+            label_elem.textContent = (label === 'other') ? '*' : `${label}`;
+
+            const container_elem = document.createElement('div');
+
+            row_elem.appendChild(label_elem);
+            row_elem.appendChild(container_elem);
+            $('#myfigures').appendChild(row_elem);
+        })
+    };
+
+
+    /***********************************************
+     *  drawing,
+     *  generating images, and clearing canvas
+     */
+    const add_listners_on_canvas = () => {
+        'use strict';
 
         const position = e => {
-            let bb = canvas.getBoundingClientRect();
+            const bb = canvas.getBoundingClientRect();
             return [
                 e.clientX - bb.left,
                 e.clientY - bb.top
             ];
         };
 
-        // #myfigures の DOM 構築
-        init_myfigures();
+        /*
+         *   drawing events
+         */
+        const clear_canvas = () => {
+            context.clearRect(0, 0, canvas.width, canvas.height)
+            drawing = false;
+            touched = false;
+        };
 
         canvas.addEventListener('mousemove', e => {
             if (!drawing) return;
 
             const c = context;
-            let [x, y] = position(e);
+            const [x, y] = position(e);
 
             c.lineTo(x, y);
             c.lineWidth = 5;
@@ -137,17 +167,24 @@
             c.stroke();
             [prev.x, prev.y] = [x, y];
         });
+
         canvas.addEventListener('mousedown', e => {
             let [x, y] = [prev.x, prev.y] = position(e);
             drawing = true;
+            touched = true;
             context.beginPath();
             context.moveTo(x, y);
         });
+
         canvas.addEventListener('mouseup', e => {
             drawing = false;
         });
 
-        let output_figure = n => {
+
+        /*
+         *  generating image, and clearing canvas
+         */
+        const output_figure = n => {
             // cf. HTMLCanvasElement.toBlob() -- MDN
             // https://developer.mozilla.org/ja/docs/Web/API/HTMLCanvasElement/toBlob
             canvas.toBlob(blob => {
@@ -160,12 +197,36 @@
                 img.id = `${n}-${unixtime}`;
                 $(`#myfigures>#fig-${n}>div:nth-child(2)`).appendChild(img);
             });
-
-            // 手書き領域クリア
-            context.clearRect(0, 0, canvas.width, canvas.height)
         };
 
-        let download_figure = element => {
+        document.addEventListener('keydown', e => {
+            const n = +e.key;
+            if (Number.isInteger(n)) {
+                output_figure(n);
+                clear_canvas();
+            } 
+        });
+
+        canvas.addEventListener('mouseleave', e => {
+            if (touched) {
+                output_figure('other');
+                clear_canvas();
+            }
+        });
+
+        canvas.addEventListener('dblclick', e => {
+            clear_canvas();
+        });
+    };
+    
+
+    /****************************************
+     *   download or erase images
+     */
+    const add_listners_on_images = () => {
+        'use strict';
+
+        const download_figure = element => {
             const a = document.createElement('a');
             const url = element.src;
 
@@ -174,25 +235,8 @@
             a.href = url;
             document.body.appendChild(a);
             a.click();
+            a.remove();
         };
-
-        canvas.addEventListener('mouseleave', e => {
-            drawing = false;
-            output_figure('other');
-        });
-
-        canvas.addEventListener('dblclick', e => {
-            // 手書き領域クリア
-            drawing = false;
-            context.clearRect(0, 0, canvas.width, canvas.height)
-        });
-
-        document.addEventListener('keydown', e => {
-            let n = +e.key;
-            if (Number.isInteger(n)) {
-                output_figure(n);
-            } 
-        });
 
         let timeout_id = null;
 
@@ -201,44 +245,36 @@
                 return;
             }
 
-            if (timeout_id !== null) { // double click
-                // 書き損じを削除
-                e.target.remove();
-                clearTimeout(timeout_id);
-                console.log(timeout_id, 'cleared');
-                timeout_id = null;
-            } else {
+            if (timeout_id === null) {
                 // 画像ファイルをダウンロード
-                timeout_id = setTimeout(() => { // click
+                timeout_id = setTimeout(() => { // single click
                     download_figure(e.target);
                     console.log(timeout_id, 'elapsed')
                     timeout_id = null;
                 }, 300);  // 300ms が判別の閾値
                 console.log(timeout_id);
+            } else { // double click
+                // 書き損じを削除
+                e.target.remove();
+                clearTimeout(timeout_id);
+                console.log(timeout_id, 'cleared');
+                timeout_id = null;
             }
         });
     };
 
-    let init_myfigures = () => {
-        let labels = [...Array(10).keys()];
-        labels.push('other');
 
-        labels.forEach(label => {
-            let row_elem = document.createElement('div');
-            row_elem.id = `fig-${label}`;
+    /*********************************************
+     *  entry point
+     */
+    document.addEventListener('DOMContentLoaded', () => {
+        canvas = $('canvas');
+        context = canvas.getContext('2d');
 
-            let label_elem = document.createElement('div');
-            label_elem.textContent = (label === 'other') ? '*' : `${label}`;
-
-            let container_elem = document.createElement('div');
-
-            row_elem.appendChild(label_elem);
-            row_elem.appendChild(container_elem);
-            $('#myfigures').appendChild(row_elem);
-        })
-    };
-
-    document.addEventListener('DOMContentLoaded', init);
+        init_myfigures();
+        add_listners_on_canvas();
+        add_listners_on_images();
+    });
 </script>
 </body>
 </html>
