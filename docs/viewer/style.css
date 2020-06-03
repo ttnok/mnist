@@ -2,16 +2,16 @@ html, body, p, pre {
     margin: 0;
     border: 0;
     padding: 0;
-}
-body {
-    background-color: gainsboro;
+    background-color: rgb(252, 252, 252);
 }
 
 #working-space {
-    background-color: gainsboro;
     margin: 0;
+    border: 2px groove gray;
+    padding: 20px;
 }
 canvas {
+    display: none;
     width: 280px;
     height: 280px;
     border: 0;
@@ -19,9 +19,19 @@ canvas {
 }
 
 #inputnumber {
-    margin-bottom: 5px;
+    display: inline-block;
+    margin-bottom: 15px;
     padding: 10px;
     border: 1px solid gray;
+    background-color: rgb(247, 239, 204);
+}
+#inputnumber > input {
+    font-size: 20pt;
+}
+#inputnumber > button {
+    height: 30px;
+    margin-left: 20px;
+    font-size: 16pt;
 }
 
 .page {
@@ -32,13 +42,16 @@ canvas {
     margin: 0;
     border: 1px solid gray;
     padding: 0;
-
-    background-color: papayawhip;
+}
+.page ~ .page {
+    border-top: 0;
 }
 .page > h1 {
-    margin-top: 0;
-    margin-left: 25px;
-    border-bottom: 1px dotted gray;
+    display: inline-block;
+    margin: 0 auto 5px 25px;
+}
+.page > h1::before {
+    content: "▶︎ ";
 }
 .page > div {
     display: flex;
@@ -52,4 +65,32 @@ img.figure {
 .ondragging {
     background-color: whitesmoke;
     border: 5px dotted gray;
+}
+
+@media screen {
+    .page {
+        margin: 20px auto;
+        box-shadow: 5px 5px 5px 5px gray;
+    }
+}
+
+@page {
+    size: A4;
+    margin: 0;
+}
+
+@media print {
+    html, body {
+        background-color: white;
+    }
+    
+    #working-space {
+        display: none;
+    }
+    .page {
+        height: cals(297mm - 3mm);
+        page-break-after: always;
+        border: 0;
+        background-color: white;
+    }    
 }

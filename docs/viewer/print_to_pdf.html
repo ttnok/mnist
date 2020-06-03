@@ -4,11 +4,18 @@
     <meta charset="UTF-8">
     <title>MNIST training images</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="print.css" media="print">
 </head>
 <body>
     <div id="working-space">
-        <p>ページ内にトレーニングデータ（<code>train-images-idx3-ubyte</code>）をドロップ</p>
+        <p>
+            Drop here following two files:
+            <ul>
+                <li>TRAINING SET LABEL FILE (train-labels-idx1-ubyte)</li>
+                <li>TRAINING SET IMAGE FILE (train-images-idx3-ubyte)</li>
+            </ul>
+            You can get these files from
+            <a href="http://yann.lecun.com/exdb/mnist/">THE MNIST DATABASE</a>.
+        </p>
         <figure>
             <canvas width="28" height="28"></canvas>
         </figure>
@@ -17,25 +24,8 @@
             <input type="number" min="1" max="60000" value="100">
             <button>print images</button>
         </p>
-        <p>
-        <pre>
-TRAINING SET IMAGE FILE (train-images-idx3-ubyte):
-
-[offset] [type]          [value]          [description]
-0000     32 bit integer  0x00000803(2051) magic number
-0004     32 bit integer  60000            number of images
-0008     32 bit integer  28               number of rows
-0012     32 bit integer  28               number of columns
-0016     unsigned byte   ??               pixel
-0017     unsigned byte   ??               pixel
-........
-xxxx     unsigned byte   ??               pixel
-
-Pixels are organized row-wise. Pixel values are 0 to 255. 0 means background (white), 255 means foreground (black).            
-        </pre>
-        </p>
     </div>
 
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
