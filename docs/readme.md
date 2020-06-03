@@ -5,3 +5,9 @@ experiments on MNIST
 ------------------------
 
 [![create your own data](v0.3.png)](https://ttnok.github.io/mnist/myfigures.html)
+
+
+MNIST viewer
+------------
+
+[![viewer](viewer/viewer.png)](https://ttnok.github.io/mnist/viewer/print_to_pdf.html)
