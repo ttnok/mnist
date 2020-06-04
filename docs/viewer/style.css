@@ -5,6 +5,10 @@ html, body, p, pre {
     background-color: rgb(252, 252, 252);
 }
 
+body {
+    height: 100vh;
+}
+
 #working-space {
     margin: 0;
     border: 2px groove gray;
@@ -34,6 +38,14 @@ canvas {
     font-size: 16pt;
 }
 
+#label_file.loaded::after, #image_file.loaded::after {
+    padding: 5px;
+    content: "LOADED!";
+    font-weight: bold;
+    color: white;
+    background-color: blue;
+}
+
 .page {
     box-sizing: border-box;
     width: 210mm;
@@ -58,8 +70,32 @@ canvas {
     flex-wrap: wrap;
     margin: 0 0 25px 25px;
 }
-img.figure {
-    margin: 1px;
+
+.figure {
+    padding: 0;
+    border: 0;
+    margin: 1px 1px 8px 1px;
+}
+
+.figure > img {
+    height: 28px;
+    width: 28px;
+    padding: 0;
+    border: 0;
+    margin: 0;
+    vertical-align: bottom;
+    /* margin: 1px 1px 0 1px; */
+}
+.figure > figcaption {
+    height: 14px;
+    width: 28px;
+    padding: 0;
+    border: 0;
+    margin: 0;
+    font-size: 1pt;
+    /* line-height: 10pt; */
+    text-align: center;
+    background-color: rgb(208, 225, 240);
 }
 
 .ondragging {
