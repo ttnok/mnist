@@ -5,47 +5,6 @@ html, body, p, pre {
     background-color: rgb(252, 252, 252);
 }
 
-body {
-    height: 100vh;
-}
-
-#working-space {
-    margin: 0;
-    border: 2px groove gray;
-    padding: 20px;
-}
-canvas {
-    display: none;
-    width: 280px;
-    height: 280px;
-    border: 0;
-    image-rendering: pixelated;
-}
-
-#inputnumber {
-    display: inline-block;
-    margin-bottom: 15px;
-    padding: 10px;
-    border: 1px solid gray;
-    background-color: rgb(247, 239, 204);
-}
-#inputnumber > input {
-    font-size: 20pt;
-}
-#inputnumber > button {
-    height: 30px;
-    margin-left: 20px;
-    font-size: 16pt;
-}
-
-#label_file.loaded::after, #image_file.loaded::after {
-    padding: 5px;
-    content: "LOADED!";
-    font-weight: bold;
-    color: white;
-    background-color: blue;
-}
-
 .page {
     box-sizing: border-box;
     width: 210mm;
@@ -84,7 +43,7 @@ canvas {
     border: 0;
     margin: 0;
     vertical-align: bottom;
-    /* margin: 1px 1px 0 1px; */
+    image-rendering: pixelated;
 }
 .figure > figcaption {
     height: 14px;
@@ -98,16 +57,57 @@ canvas {
     background-color: rgb(208, 225, 240);
 }
 
-.ondragging {
-    background-color: whitesmoke;
-    border: 5px dotted gray;
-}
-
 @media screen {
+    body {
+        height: 100vh;
+    }
+    
+    #working-space {
+        margin: 0;
+        border: 2px groove gray;
+        padding: 20px;
+    }
+    canvas {
+        display: none;
+        width: 280px;
+        height: 280px;
+        border: 0;
+        image-rendering: pixelated;
+    }
+    
+    #inputnumber {
+        display: inline-block;
+        margin-bottom: 15px;
+        padding: 10px;
+        border: 1px solid gray;
+        background-color: rgb(247, 239, 204);
+    }
+    #inputnumber > input {
+        font-size: 20pt;
+    }
+    #inputnumber > button {
+        height: 30px;
+        margin-left: 20px;
+        font-size: 16pt;
+    }
+    
+    #label_file.loaded::before, #image_file.loaded::before {
+        padding: 5px;
+        margin-right: 10px;
+        content: "LOADED!";
+        font-weight: bold;
+        color: white;
+        background-color: blue;
+    }
+
     .page {
         margin: 20px auto;
         box-shadow: 5px 5px 5px 5px gray;
     }
+
+    .ondragging {
+        border: 5px dotted gray;
+    }    
 }
 
 @page {
