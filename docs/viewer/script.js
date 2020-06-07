@@ -32,7 +32,7 @@ const n_images_in_each_page = 500;
 
 
 /**
- * funcitons
+ * functions
  */
 
 const load_labels = () => {  // load ALL labels
