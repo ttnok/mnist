@@ -138,11 +138,6 @@ const clear_outputs = () => {
     $$('.page').forEach(page => page.remove());
 };
 
-const main = () => {
-    build_pages(1, +$('#inputnumber > input').value);
-    render(1, +$('#inputnumber > input').value);
-};
-
 /**
  * Event Listners
  */
