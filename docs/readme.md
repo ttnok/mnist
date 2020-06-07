@@ -10,4 +10,4 @@ experiments on MNIST
 MNIST viewer
 ------------
 
-[![viewer](viewer/viewer.png)](https://ttnok.github.io/mnist/viewer/print_to_pdf.html)
+[![viewer](viewer/viewer-v0.1.0.gif)](https://ttnok.github.io/mnist/viewer/print_to_pdf.html)
