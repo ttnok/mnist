@@ -91,6 +91,8 @@
 
     <div id="myfigures">
     </div>
+
+    <button>すべてダウンロード</button>
 </main>
 
 <script>
@@ -223,20 +225,21 @@
     /****************************************
      *   download or erase images
      */
+    const download_figure = element => {
+        const a = document.createElement('a');
+        const url = element.src;
+
+        a.style.display = 'none';
+        a.download = `${element.id}.png`;
+        a.href = url;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    };
+
     const add_listners_on_images = () => {
         'use strict';
 
-        const download_figure = element => {
-            const a = document.createElement('a');
-            const url = element.src;
-
-            a.style.display = 'none';
-            a.download = `${element.id}.png`;
-            a.href = url;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-        };
 
         let timeout_id = null;
 
@@ -274,6 +277,13 @@
         init_myfigures();
         add_listners_on_canvas();
         add_listners_on_images();
+    });
+
+    $('button').addEventListener('click', () => {
+        [...document.querySelectorAll('#myfigures img')].forEach(img => {
+            console.log(img);
+            download_figure(img);
+        })
     });
 </script>
 </body>
