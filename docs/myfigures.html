@@ -279,11 +279,12 @@
         add_listners_on_images();
     });
 
-    $('button').addEventListener('click', () => {
-        [...document.querySelectorAll('#myfigures img')].forEach(img => {
+    $('button').addEventListener('click', async () => {
+        for (const img of [...document.querySelectorAll('#myfigures img')]) {
             console.log(img);
             download_figure(img);
-        })
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
     });
 </script>
 </body>
